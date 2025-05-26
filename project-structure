@@ -1,0 +1,20 @@
+kubenote/
+├── app/
+│   ├── frontend/            # Flask frontend with HTML forms
+│   ├── backend/             # Flask API (CRUD)
+│   └── database/            # SQL init script
+├── docker/
+│   ├── frontend.Dockerfile
+│   ├── backend.Dockerfile
+│   └── postgres.Dockerfile (optional)
+├── k8s/
+│   ├── manifests/
+│   │   ├── frontend.yaml
+│   │   ├── backend.yaml
+│   │   ├── postgres.yaml
+│   ├── configs/             # ConfigMap, Secrets
+│   ├── ingress/             # Ingress + controller
+│   └── hpa/                 # Optional: autoscaling
+├── .github/workflows/       # Optional: CI pipelines
+└── README.md
+

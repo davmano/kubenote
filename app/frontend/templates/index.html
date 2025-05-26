@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KubeNote</title>
+</head>
+<body>
+    <h1>KubeNote</h1>
+
+    <form method="POST">
+        <input type="text" name="content" placeholder="Write a note..." required>
+        <button type="submit">Add Note</button>
+    </form>
+
+    <ul>
+        {% for note in notes %}
+        <li>{{ note.id }}: {{ note.content }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
