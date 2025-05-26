@@ -24,11 +24,11 @@ jobs:
 
       - name: Build and push backend image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/kubenote-backend:latest -f docker/backend.Dockerfile .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/kubenote-backend:latest -f docker/backend.Dockerfile app/backend
           docker push ${{ secrets.DOCKER_USERNAME }}/kubenote-backend:latest
 
       - name: Build and push frontend image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/kubenote-frontend:latest -f docker/frontend.Dockerfile .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/kubenote-frontend:latest -f docker/frontend.Dockerfile app/frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/kubenote-frontend:latest
 
