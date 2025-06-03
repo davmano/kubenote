@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-servicemonitor
+  namespace: monitoring
+  labels:
+    release: kube-prom-stack
+spec:
+  selector:
+    matchLabels:
+      app: backend   # must match the Service label!
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: http     # must match the name of the port in the Service
+      path: /metrics
+      interval: 15s
+
