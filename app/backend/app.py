@@ -1,8 +1,18 @@
-from flask import Flask, request, jsonify
-import psycopg2
+from flask import Flask, request, jsonify # type: ignore
+import psycopg2 # type: ignore
 import os
 
+# Prometheus imports
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST # type: ignore
+
 app = Flask(__name__)
+
+# 🔹 Prometheus metrics
+REQUEST_COUNT = Counter(
+    "http_requests_total",
+    "Total HTTP requests",
+    ["method", "endpoint"]
+)
 
 # Load database config from environment variables
 DB_HOST = os.getenv("DB_HOST", "localhost")
@@ -22,6 +32,7 @@ def get_db_connection():
 
 @app.route("/notes", methods=["GET"])
 def get_notes():
+    REQUEST_COUNT.labels(method="GET", endpoint="/notes").inc()
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT id, content FROM notes ORDER BY id DESC;")
@@ -32,6 +43,7 @@ def get_notes():
 
 @app.route("/notes", methods=["POST"])
 def add_note():
+    REQUEST_COUNT.labels(method="POST", endpoint="/notes").inc()
     data = request.get_json()
     content = data.get("content", "")
     if not content:
@@ -47,8 +59,13 @@ def add_note():
 
 @app.route("/")
 def health_check():
+    REQUEST_COUNT.labels(method="GET", endpoint="/").inc()
     return "KubeNote Backend is running!", 200
+
+@app.route("/metrics")
+def metrics():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
+# This code is the backend service for KubeNote, a simple note-taking application.
