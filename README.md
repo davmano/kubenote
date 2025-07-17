@@ -69,4 +69,5 @@ Frontend should be accessible (e.g. http://localhost or NodePort IP).
 ## 🤖 CI/CD (GitHub Actions)
 See .github/workflows/kubenote-ci.yaml for the CI pipeline.
 Action
+
 [![Docker Build & Push](https://github.com/davmano/kubenote/actions/workflows/docker-build-and-push.yaml/badge.svg)](https://github.com/davmano/kubenote/actions/workflows/docker-build-and-push.yaml)
