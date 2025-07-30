@@ -6,7 +6,8 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 5000
+    - name: http
+      port: 5000
       targetPort: 5000
 ---
 apiVersion: apps/v1

@@ -66,6 +66,62 @@ kubectl get svc
 ```
 Frontend should be accessible (e.g. http://localhost or NodePort IP).
 
+## 📊 Monitoring Stack
+
+KubeNote includes integrated Prometheus and Grafana monitoring:
+
+### Components
+- **Prometheus**: Metrics collection and alerting
+- **Grafana**: Visualization dashboards
+- **PostgreSQL Exporter**: Database metrics
+- **Application Metrics**: Custom Flask application metrics
+
+### Setup Monitoring
+```bash
+# Deploy monitoring namespace and RBAC
+kubectl apply -f k8s/monitoring/namespace.yaml
+kubectl apply -f k8s/monitoring/prometheus-rbac.yaml
+
+# Create monitoring secrets
+# Before deploying monitoring components, create the required secrets.
+# See k8s/monitoring/README.md for detailed secret creation instructions.
+
+# Deploy Prometheus
+kubectl apply -f k8s/monitoring/prometheus-configmap.yaml
+kubectl apply -f k8s/monitoring/prometheus-deployment.yaml
+kubectl apply -f k8s/monitoring/prometheus-service.yaml
+
+# Deploy Grafana
+kubectl apply -f k8s/monitoring/grafana-configmap.yaml
+kubectl apply -f k8s/monitoring/grafana-deployment.yaml
+kubectl apply -f k8s/monitoring/grafana-service.yaml
+
+# Deploy PostgreSQL monitoring
+kubectl apply -f k8s/monitoring/postgres-exporter-deployment.yaml
+
+# Deploy ServiceMonitors
+kubectl apply -f k8s/monitoring/backend-servicemonitor.yaml
+kubectl apply -f k8s/monitoring/frontend-servicemonitor.yaml
+kubectl apply -f k8s/monitoring/postgres-servicemonitor.yaml
+
+# Deploy monitoring ingress
+kubectl apply -f k8s/monitoring/ingress-monitoring.yaml
+```
+
+### Access Monitoring Services
+- **Prometheus**: http://kubenote.local/prometheus (via monitoring ingress)
+- **Grafana**: http://kubenote.local/grafana (via monitoring ingress)
+  - Use the credentials you configured when creating the grafana-secret
+
+### Available Dashboards
+- **KubeNote Application Metrics**: HTTP requests, response times, service uptime
+- **PostgreSQL Metrics**: Database connections, size, query rates
+
+### Metrics Endpoints
+- Backend: http://backend:5000/metrics
+- Frontend: http://frontend:5000/metrics
+- PostgreSQL: http://postgres-exporter:9187/metrics
+
 ## 🤖 CI/CD (GitHub Actions)
 See .github/workflows/kubenote-ci.yaml for the CI pipeline.
 Action
