@@ -1,0 +1,207 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  prometheus.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+               "access":"proxy",
+                "editable": true,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus:9090",
+                "version": 1
+            }
+        ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-config
+  namespace: monitoring
+data:
+  dashboards.yaml: |-
+    {
+        "apiVersion": 1,
+        "providers": [
+            {
+                "folder": "KubeNote",
+                "name": "kubenote",
+                "options": {
+                    "path": "/grafana-dashboard-definitions/kubenote"
+                },
+                "orgId": 1,
+                "type": "file"
+            }
+        ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-kubenote-app
+  namespace: monitoring
+data:
+  kubenote-app.json: |-
+    {
+      "dashboard": {
+        "id": null,
+        "title": "KubeNote Application Metrics",
+        "tags": ["kubenote"],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "HTTP Requests per Second",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total[5m])",
+                "legendFormat": "{{job}} - {{method}} {{endpoint}}"
+              }
+            ],
+            "yAxes": [
+              {
+                "label": "requests/sec"
+              }
+            ],
+            "xAxes": [
+              {
+                "type": "time"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "id": 2,
+            "title": "Total HTTP Requests",
+            "type": "singlestat",
+            "targets": [
+              {
+                "expr": "sum(http_requests_total)",
+                "legendFormat": "Total Requests"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 12,
+              "y": 0
+            }
+          },
+          {
+            "id": 3,
+            "title": "Service Uptime",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "up",
+                "legendFormat": "{{job}}"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 24,
+              "x": 0,
+              "y": 8
+            }
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-postgres
+  namespace: monitoring
+data:
+  postgres.json: |-
+    {
+      "dashboard": {
+        "id": null,
+        "title": "PostgreSQL Metrics",
+        "tags": ["postgres", "kubenote"],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "Database Connections",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "pg_stat_database_numbackends",
+                "legendFormat": "Active Connections"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "id": 2,
+            "title": "Database Size",
+            "type": "singlestat",
+            "targets": [
+              {
+                "expr": "pg_database_size_bytes",
+                "legendFormat": "Database Size"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 12,
+              "y": 0
+            }
+          },
+          {
+            "id": 3,
+            "title": "Query Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(pg_stat_database_xact_commit[5m])",
+                "legendFormat": "Commits/sec"
+              },
+              {
+                "expr": "rate(pg_stat_database_xact_rollback[5m])",
+                "legendFormat": "Rollbacks/sec"
+              }
+            ],
+            "gridPos": {
+              "h": 8,
+              "w": 24,
+              "x": 0,
+              "y": 8
+            }
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
