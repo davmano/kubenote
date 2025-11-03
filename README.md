@@ -25,7 +25,7 @@ kubenote/
 └── README.md
 ```
 
-## 🚀 Tech Stack
+## 🚀 Tech Stack Used
 
 - Frontend: Flask
 - Backend: Flask (REST API)
